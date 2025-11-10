@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Products | FoodieZone</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #062f65;
+      --secondary-color: #668c6f;
+      --accent-color: #0e7c01;
+      --light-bg: #f5f6fa;
+      --text-color: #222;
+      --text-muted: #666;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--light-bg);
+      color: var(--text-color);
+    }
+
+    header {
+      background-color: transparent;
+      padding: 20px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-color);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 40px;
+      color: var(--primary-color);
+    }
+
+    .gallery {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      width: calc(25% - 15px);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .card-body h4 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+    }
+
+    .card-body p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .card-body .price {
+      color: var(--accent-color);
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+    }
+
+    .order-btn {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .order-btn:hover {
+      background-color: #0c6a01;
+    }
+
+    .order-btn i {
+      margin-right: 8px;
+    }
+
+    .alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--accent-color);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transform: translateX(150%);
+      transition: transform 0.3s ease;
+    }
+
+    .alert.show {
+      transform: translateX(0);
+    }
+
+    .cart-count {
+      background: var(--accent-color);
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      margin-left: 5px;
+    }
+
+    footer {
+      background-color: white;
+      color: var(--text-muted);
+      padding: 40px 20px 20px;
+      margin-top: 60px;
+      border-top: 1px solid #ddd;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: space-between;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .footer-column {
+      flex: 1 1 250px;
+    }
+
+    .footer-column h3 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .footer-column p,
+    .footer-column a {
+      color: #666;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    @media (max-width: 768px) {
+      .gallery {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .card {
+        width: 90%;
+      }
+      
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        width: 100%;
+        padding: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="#" class="logo">FoodieZone</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="Services.html">Our Products</a></li>
+        <li><a href="Contact.html">Contact</a></li>
+        <li><a href="cart.html">Cart <span class="cart-count" id="cartCount">0</span></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2 class="section-title">Our Delicious Dishes</h2>
+    <div class="gallery">
+      <!-- Item 1 -->
+      <div class="card">
+        <img src="img/burger1.jpg" alt="Classic Burger" />
+        <div class="card-body">
+          <h4>Classic Burger</h4>
+          <p>Beef patty, cheddar, tomato & onion</p>
+          <p class="price">R65.00</p>
+          <button class="order-btn" onclick="orderItem('Classic Burger', 65.00, 'img/burger1.jpg')">
+            <i class="fas fa-shopping-cart"></i>Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="card">
+        <img src="img/pizza1.jpg" alt="Cheesy Pizza" />
+        <div class="card-body">
+          <h4>Cheesy Pizza</h4>
+          <p>Loaded with mozzarella & fresh herbs</p>
+          <p class="price">R89.00</p>
+          <button class="order-btn" onclick="orderItem('Cheesy Pizza', 89.00, 'img/pizza1.jpg')">
+            <i class="fas fa-shopping-cart"></i>Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="card">
+        <img src="img/wings.jpg" alt="Spicy Wings" />
+        <div class="card-body">
+          <h4>Spicy Wings</h4>
+          <p>8-piece wings tossed in peri-peri</p>
+          <p class="price">R75.00</p>
+          <button class="order-btn" onclick="orderItem('Spicy Wings', 75.00, 'img/wings.jpg')">
+            <i class="fas fa-shopping-cart"></i>Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="card">
+        <img src="img/kas1.jpg" alt="Creamy Alfredo" />
+        <div class="card-body">
+          <h4>Creamy Alfredo</h4>
+          <p>Fettuccine pasta in white sauce</p>
+          <p class="price">R80.00</p>
+          <button class="order-btn" onclick="orderItem('Creamy Alfredo', 80.00, 'img/pasta.jpg')">
+            <i class="fas fa-shopping-cart"></i>Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- Item 5 -->
+      <div class="card">
+        <img src="img/kasi2.jpg" alt="Fresh Garden Salad" />
+        <div class="card-body">
+          <h4>Fresh Garden Salad</h4>
+          <p>Mixed greens with balsamic dressing</p>
+          <p class="price">R55.00</p>
+          <button class="order-btn" onclick="orderItem('Fresh Garden Salad', 55.00, 'img/salad.jpg')">
+            <i class="fas fa-shopping-cart"></i>Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- Item 6 -->
+      <div class="card">
+        <img src="img/kasi3.jpg" alt="Grilled Steak" />
+        <div class="card-body">
+          <h4>Grilled Steak</h4>
+          <p>300g ribeye with garlic butter</p>
+          <p class="price">R120.00</p>
+          <button class="order-btn" onclick="orderItem('Grilled Steak', 120.00, 'img/steak.jpg')">
+            <i class="fas fa-shopping-cart"></i>Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- Item 7 -->
+      <div class="card">
+        <img src="img/kasi4.jpg" alt="Grilled Salmon" />
+        <div class="card-body">
+          <h4>Grilled Salmon</h4>
+          <p>Atlantic salmon with lemon herb sauce</p>
+          <p class="price">R95.00</p>
+          <button class="order-btn" onclick="orderItem('Grilled Salmon', 95.00, 'img/fish.jpg')">
+            <i class="fas fa-shopping-cart"></i>Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <!-- Item 8 -->
+      <div class="card">
+        <img src="img/kasi5.jpg" alt="Chocolate Lava Cake" />
+        <div class="card-body">
+          <h4>Chocolate Lava Cake</h4>
+          <p>Warm chocolate cake with vanilla ice cream</p>
+          <p class="price">R45.00</p>
+          <button class="order-btn" onclick="orderItem('Chocolate Lava Cake', 45.00, 'img/dessert.jpg')">
+            <i class="fas fa-shopping-cart"></i>Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert notification -->
+  <div class="alert" id="alert">
+    <i class="fas fa-check-circle"></i>
+    <span id="alertMessage">Item added to cart!</span>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>FoodieZone</h3>
+        <p>Delicious homemade treats crafted with love and the finest ingredients.</p>
+      </div>
+      <div class="footer-column">
+        <h3>Contact</h3>
+        <p><strong>Phone:</strong> (456) 789-1230</p>
+        <p><strong>Email:</strong> info@foodiezone.co.za</p>
+        <p><strong>Address:</strong> South 13th Street, Pimville, Soweto</p>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="about.html">About</a></p>
+        <p><a href="Services.html">Our Products</a></p>
+        <p><a href="Contact.html">Contact</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2024 FoodieZone. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    // Cart functions for product page
+    function orderItem(itemName, price, image) {
+      addToCart(itemName, price, image);
+    }
+
+    function addToCart(itemName, price, image) {
+      // Get existing cart or create new one
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      
+      // Check if item already exists in cart
+      const existingItemIndex = cart.findIndex(item => item.name === itemName);
+      
+      if (existingItemIndex !== -1) {
+        // Increase quantity if item exists
+        cart[existingItemIndex].quantity += 1;
+      } else {
+        // Add new item to cart
+        cart.push({
+          name: itemName,
+          price: price,
+          image: image,
+          quantity: 1
+        });
+      }
+      
+      // Save to localStorage
+      localStorage.setItem('cart', JSON.stringify(cart));
+      
+      // Update cart count
+      updateCartCount();
+      
+      // Show success message
+      showAlert(`${itemName} added to cart!`);
+    }
+
+    function showAlert(message) {
+      const alertElement = document.getElementById('alert');
+      const alertMessage = document.getElementById('alertMessage');
+      
+      alertMessage.textContent = message;
+      alertElement.classList.add('show');
+      
+      setTimeout(() => {
+        alertElement.classList.remove('show');
+      }, 3000);
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById('cartCount').textContent = totalItems;
+    }
+
+    // Initialize cart count when page loads
+    document.addEventListener('DOMContentLoaded', updateCartCount);
+  </script>
+</body>
+</html>

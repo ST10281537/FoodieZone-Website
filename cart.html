@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart | FoodieZone</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #062f65;
+      --secondary-color: #668c6f;
+      --accent-color: #0e7c01;
+      --light-bg: #f5f6fa;
+      --text-color: #222;
+      --text-muted: #666;
+      --danger-color: #e74c3c;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--light-bg);
+      color: var(--text-color);
+    }
+
+    header {
+      background-color: transparent;
+      padding: 20px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-color);
+    }
+
+    .cart-count {
+      background: var(--accent-color);
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      margin-left: 5px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 40px;
+      color: var(--primary-color);
+    }
+
+    .cart-container {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .cart-items {
+      flex: 2;
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .cart-summary {
+      flex: 1;
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      height: fit-content;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+
+    .item-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-right: 15px;
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-name {
+      font-weight: 600;
+      margin: 0 0 5px;
+    }
+
+    .item-price {
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .quantity-btn {
+      background: var(--light-bg);
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .quantity-btn:hover {
+      background: #e0e0e0;
+    }
+
+    .quantity {
+      font-weight: 600;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: var(--danger-color);
+      cursor: pointer;
+      font-size: 1.2rem;
+      margin-left: 15px;
+      transition: transform 0.2s;
+    }
+
+    .remove-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .empty-cart {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+
+    .empty-cart i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: #ccc;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .summary-total {
+      font-weight: bold;
+      font-size: 1.2rem;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+      margin-top: 10px;
+    }
+
+    .checkout-btn {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+      font-size: 1rem;
+      margin-top: 20px;
+    }
+
+    .checkout-btn:hover {
+      background-color: #0c6a01;
+    }
+
+    .checkout-btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .continue-shopping {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .continue-shopping:hover {
+      text-decoration: underline;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: scale(0.7);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin: 0;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .payment-methods {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .payment-method {
+      flex: 1;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .payment-method.active {
+      border-color: var(--accent-color);
+      background-color: #f0fff0;
+    }
+
+    .payment-method i {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      color: var(--primary-color);
+    }
+
+    .payment-form {
+      margin-top: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .pay-btn {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1rem;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .pay-btn:hover {
+      background-color: #0c6a01;
+    }
+
+    .pay-btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .success-message {
+      text-align: center;
+      padding: 30px 0;
+    }
+
+    .success-message i {
+      font-size: 4rem;
+      color: var(--accent-color);
+      margin-bottom: 20px;
+    }
+
+    .order-number {
+      background: var(--light-bg);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      font-family: monospace;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--accent-color);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transform: translateX(150%);
+      transition: transform 0.3s ease;
+    }
+
+    .alert.show {
+      transform: translateX(0);
+    }
+
+    footer {
+      background-color: white;
+      color: var(--text-muted);
+      padding: 40px 20px 20px;
+      margin-top: 60px;
+      border-top: 1px solid #ddd;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: space-between;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .footer-column {
+      flex: 1 1 250px;
+    }
+
+    .footer-column h3 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .footer-column p,
+    .footer-column a {
+      color: #666;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    @media (max-width: 768px) {
+      .cart-container {
+        flex-direction: column;
+      }
+      
+      .cart-item {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .item-image {
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+      
+      .quantity-controls {
+        justify-content: center;
+      }
+      
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        width: 100%;
+        padding: 10px 0;
+      }
+
+      .payment-methods {
+        flex-direction: column;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="#" class="logo">FoodieZone</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="Services.html">Our Products</a></li>
+        <li><a href="Contact.html">Contact</a></li>
+        <li><a href="cart.html">Cart <span class="cart-count" id="cartCount">0</span></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2 class="section-title">Your Shopping Cart</h2>
+    
+    <div class="cart-container">
+      <div class="cart-items" id="cartItems">
+        <!-- Cart items will be dynamically inserted here -->
+        <div class="empty-cart" id="emptyCart">
+          <i class="fas fa-shopping-cart"></i>
+          <h3>Your cart is empty</h3>
+          <p>Add some delicious items from our menu</p>
+          <a href="Services.html" class="continue-shopping">Continue Shopping</a>
+        </div>
+      </div>
+      
+      <div class="cart-summary">
+        <h3>Order Summary</h3>
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span id="subtotal">R0.00</span>
+        </div>
+        <div class="summary-row">
+          <span>Delivery Fee:</span>
+          <span id="deliveryFee">R25.00</span>
+        </div>
+        <div class="summary-row summary-total">
+          <span>Total:</span>
+          <span id="totalAmount">R25.00</span>
+        </div>
+        <button class="checkout-btn" id="checkoutBtn" disabled>Proceed to Checkout</button>
+        <a href="Services.html" class="continue-shopping">Continue Shopping</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div class="modal-overlay" id="checkoutModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Complete Your Order</h3>
+        <button class="close-modal" id="closeModal">&times;</button>
+      </div>
+      
+      <div id="paymentSection">
+        <div class="summary-row">
+          <span>Order Total:</span>
+          <span id="modalTotal">R0.00</span>
+        </div>
+        
+        <h4>Select Payment Method</h4>
+        <div class="payment-methods">
+          <div class="payment-method active" data-method="credit">
+            <i class="fas fa-credit-card"></i>
+            <div>Credit Card</div>
+          </div>
+          <div class="payment-method" data-method="eft">
+            <i class="fas fa-university"></i>
+            <div>EFT</div>
+          </div>
+        </div>
+
+        <!-- Credit Card Form -->
+        <div class="payment-form" id="creditCardForm">
+          <div class="form-group">
+            <label for="cardNumber">Card Number</label>
+            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="expiryDate">Expiry Date</label>
+              <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5">
+            </div>
+            <div class="form-group">
+              <label for="cvv">CVV</label>
+              <input type="text" id="cvv" placeholder="123" maxlength="3">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cardName">Name on Card</label>
+            <input type="text" id="cardName" placeholder="John Doe">
+          </div>
+        </div>
+
+        <!-- EFT Form -->
+        <div class="payment-form" id="eftForm" style="display: none;">
+          <div class="form-group">
+            <label for="bankName">Bank Name</label>
+            <input type="text" id="bankName" placeholder="e.g., ABSA, FNB, Standard Bank">
+          </div>
+          <div class="form-group">
+            <label for="accountHolder">Account Holder Name</label>
+            <input type="text" id="accountHolder" placeholder="Full name as on bank account">
+          </div>
+          <div class="form-group">
+            <label for="accountNumber">Account Number</label>
+            <input type="text" id="accountNumber" placeholder="Your bank account number">
+          </div>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 20px;">
+            <i class="fas fa-info-circle"></i> 
+            You will be redirected to your bank's secure payment portal to complete the transaction.
+          </p>
+        </div>
+
+        <button class="pay-btn" id="payBtn">Pay Now</button>
+      </div>
+
+      <!-- Success Message -->
+      <div id="successSection" style="display: none;">
+        <div class="success-message">
+          <i class="fas fa-check-circle"></i>
+          <h3>Order Received!</h3>
+          <p>Thank you for your order. Your food is being prepared.</p>
+          <div class="order-number" id="orderNumber">ORDER-123456</div>
+          <p>You will receive a confirmation email shortly.</p>
+          <button class="pay-btn" onclick="closeModalAndClearCart()">Continue Shopping</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert notification -->
+  <div class="alert" id="alert">
+    <i class="fas fa-check-circle"></i>
+    <span id="alertMessage">Item added to cart!</span>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>FoodieZone</h3>
+        <p>Delicious homemade treats crafted with love and the finest ingredients.</p>
+      </div>
+      <div class="footer-column">
+        <h3>Contact</h3>
+        <p><strong>Phone:</strong> (456) 789-1230</p>
+        <p><strong>Email:</strong> info@foodiezone.co.za</p>
+        <p><strong>Address:</strong> South 13th Street, Pimville, Soweto</p>
+      </div>
+      <div class="footer-column">
+        <h3>Quick Links</h3>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="about.html">About</a></p>
+        <p><a href="Services.html">Our Products</a></p>
+        <p><a href="Contact.html">Contact</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2024 FoodieZone. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    // Cart data structure
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let selectedPaymentMethod = 'credit';
+
+    // DOM elements
+    const cartItemsContainer = document.getElementById('cartItems');
+    const emptyCartElement = document.getElementById('emptyCart');
+    const subtotalElement = document.getElementById('subtotal');
+    const totalElement = document.getElementById('totalAmount');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const alertElement = document.getElementById('alert');
+    const alertMessage = document.getElementById('alertMessage');
+    const cartCountElement = document.getElementById('cartCount');
+    
+    // Modal elements
+    const checkoutModal = document.getElementById('checkoutModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const modalTotalElement = document.getElementById('modalTotal');
+    const paymentMethods = document.querySelectorAll('.payment-method');
+    const creditCardForm = document.getElementById('creditCardForm');
+    const eftForm = document.getElementById('eftForm');
+    const payBtn = document.getElementById('payBtn');
+    const paymentSection = document.getElementById('paymentSection');
+    const successSection = document.getElementById('successSection');
+    const orderNumberElement = document.getElementById('orderNumber');
+
+    // Initialize cart display
+    function initCart() {
+      updateCartCount();
+      renderCartItems();
+      updateCartSummary();
+    }
+
+    // Render cart items
+    function renderCartItems() {
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '';
+        cartItemsContainer.appendChild(emptyCartElement);
+        emptyCartElement.style.display = 'block';
+        return;
+      }
+      
+      emptyCartElement.style.display = 'none';
+      
+      let cartHTML = '';
+      cart.forEach((item, index) => {
+        const itemTotal = (item.price * item.quantity).toFixed(2);
+        cartHTML += `
+          <div class="cart-item">
+            <img src="${item.image}" alt="${item.name}" class="item-image">
+            <div class="item-details">
+              <h4 class="item-name">${item.name}</h4>
+              <p class="item-price">R${item.price.toFixed(2)}</p>
+              <div class="quantity-controls">
+                <button class="quantity-btn" onclick="decreaseQuantity(${index})">-</button>
+                <span class="quantity">${item.quantity}</span>
+                <button class="quantity-btn" onclick="increaseQuantity(${index})">+</button>
+              </div>
+            </div>
+            <div>
+              <p class="item-price">R${itemTotal}</p>
+              <button class="remove-btn" onclick="removeItem(${index})">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      
+      cartItemsContainer.innerHTML = cartHTML;
+    }
+
+    // Update cart summary
+    function updateCartSummary() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const deliveryFee = 25.00;
+      const total = subtotal + deliveryFee;
+      
+      subtotalElement.textContent = `R${subtotal.toFixed(2)}`;
+      totalElement.textContent = `R${total.toFixed(2)}`;
+      
+      // Enable/disable checkout button
+      checkoutBtn.disabled = cart.length === 0;
+    }
+
+    // Update cart count in navigation
+    function updateCartCount() {
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      cartCountElement.textContent = totalItems;
+    }
+
+    // Increase item quantity
+    function increaseQuantity(index) {
+      cart[index].quantity += 1;
+      saveCart();
+      updateCartCount();
+      renderCartItems();
+      updateCartSummary();
+    }
+
+    // Decrease item quantity
+    function decreaseQuantity(index) {
+      if (cart[index].quantity > 1) {
+        cart[index].quantity -= 1;
+      } else {
+        removeItem(index);
+        return;
+      }
+      saveCart();
+      updateCartCount();
+      renderCartItems();
+      updateCartSummary();
+    }
+
+    // Remove item from cart
+    function removeItem(index) {
+      const itemName = cart[index].name;
+      cart.splice(index, 1);
+      saveCart();
+      updateCartCount();
+      renderCartItems();
+      updateCartSummary();
+      showAlert(`${itemName} removed from cart`);
+    }
+
+    // Save cart to localStorage
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    // Show alert message
+    function showAlert(message) {
+      alertMessage.textContent = message;
+      alertElement.classList.add('show');
+      
+      setTimeout(() => {
+        alertElement.classList.remove('show');
+      }, 3000);
+    }
+
+    // Open checkout modal
+    function openCheckoutModal() {
+      if (cart.length === 0) return;
+      
+      // Update modal total
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 25.00;
+      modalTotalElement.textContent = `R${total.toFixed(2)}`;
+      
+      // Reset forms
+      resetPaymentForms();
+      paymentSection.style.display = 'block';
+      successSection.style.display = 'none';
+      
+      // Show modal
+      checkoutModal.classList.add('active');
+    }
+
+    // Close modal
+    function closeModal() {
+      checkoutModal.classList.remove('active');
+    }
+
+    // Close modal and clear cart (after successful payment)
+    function closeModalAndClearCart() {
+      closeModal();
+      // Clear cart
+      cart = [];
+      saveCart();
+      updateCartCount();
+      renderCartItems();
+      updateCartSummary();
+    }
+
+    // Reset payment forms
+    function resetPaymentForms() {
+      document.getElementById('cardNumber').value = '';
+      document.getElementById('expiryDate').value = '';
+      document.getElementById('cvv').value = '';
+      document.getElementById('cardName').value = '';
+      document.getElementById('bankName').value = '';
+      document.getElementById('accountHolder').value = '';
+      document.getElementById('accountNumber').value = '';
+      
+      // Reset to credit card
+      selectedPaymentMethod = 'credit';
+      paymentMethods[0].classList.add('active');
+      paymentMethods[1].classList.remove('active');
+      creditCardForm.style.display = 'block';
+      eftForm.style.display = 'none';
+    }
+
+    // Generate random order number
+    function generateOrderNumber() {
+      const timestamp = Date.now().toString().slice(-6);
+      const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      return `FZ-${timestamp}${random}`;
+    }
+
+    // Process payment
+    function processPayment() {
+      // Validate form based on selected payment method
+      let isValid = true;
+      
+      if (selectedPaymentMethod === 'credit') {
+        const cardNumber = document.getElementById('cardNumber').value;
+        const expiryDate = document.getElementById('expiryDate').value;
+        const cvv = document.getElementById('cvv').value;
+        const cardName = document.getElementById('cardName').value;
+        
+        if (!cardNumber || !expiryDate || !cvv || !cardName) {
+          isValid = false;
+          showAlert('Please fill in all credit card details');
+        } else if (cardNumber.replace(/\s/g, '').length !== 16) {
+          isValid = false;
+          showAlert('Please enter a valid 16-digit card number');
+        }
+      } else {
+        const bankName = document.getElementById('bankName').value;
+        const accountHolder = document.getElementById('accountHolder').value;
+        const accountNumber = document.getElementById('accountNumber').value;
+        
+        if (!bankName || !accountHolder || !accountNumber) {
+          isValid = false;
+          showAlert('Please fill in all EFT details');
+        }
+      }
+      
+      if (!isValid) return;
+      
+      // Simulate payment processing
+      payBtn.disabled = true;
+      payBtn.textContent = 'Processing...';
+      
+      setTimeout(() => {
+        // Show success message
+        const orderNumber = generateOrderNumber();
+        orderNumberElement.textContent = orderNumber;
+        paymentSection.style.display = 'none';
+        successSection.style.display = 'block';
+        
+        // Reset pay button
+        payBtn.disabled = false;
+        payBtn.textContent = 'Pay Now';
+      }, 2000);
+    }
+
+    // Initialize cart when page loads
+    document.addEventListener('DOMContentLoaded', initCart);
+    
+    // Event listeners
+    checkoutBtn.addEventListener('click', openCheckoutModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    payBtn.addEventListener('click', processPayment);
+
+    // Payment method selection
+    paymentMethods.forEach(method => {
+      method.addEventListener('click', () => {
+        paymentMethods.forEach(m => m.classList.remove('active'));
+        method.classList.add('active');
+        selectedPaymentMethod = method.dataset.method;
+        
+        if (selectedPaymentMethod === 'credit') {
+          creditCardForm.style.display = 'block';
+          eftForm.style.display = 'none';
+        } else {
+          creditCardForm.style.display = 'none';
+          eftForm.style.display = 'block';
+        }
+      });
+    });
+
+    // Close modal when clicking outside
+    checkoutModal.addEventListener('click', (e) => {
+      if (e.target === checkoutModal) {
+        closeModal();
+      }
+    });
+
+    // Format card number input
+    document.getElementById('cardNumber').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+      let formattedValue = value.match(/.{1,4}/g)?.join(' ');
+      e.target.value = formattedValue || value;
+    });
+
+    // Format expiry date input
+    document.getElementById('expiryDate').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length >= 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+      }
+      e.target.value = value;
+    });
+
+    // Format CVV input (numbers only)
+    document.getElementById('cvv').addEventListener('input', function(e) {
+      e.target.value = e.target.value.replace(/\D/g, '');
+    });
+  </script>
+</body>
+</html>

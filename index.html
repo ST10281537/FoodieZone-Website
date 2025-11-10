@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodieZone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #062f65 ;
+            --secondary-color: #668c6f   ;
+            --accent-color: #0e7c01;
+            --dark-color: #fff;
+            --light-color: #f5f6fa;
+            --text-color: #fff;
+            --text-light: #b0b7b1 ;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            background-color: #c0398b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            color: var(--dark-color);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            color: var(--dark-color);
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        /* Admin Login Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .login-modal {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-overlay.active .login-modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .modal-subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background-color: #0c6a01;
+        }
+
+        .login-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--accent-color);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('img/wall2.jpg') no-repeat center center/cover;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* Products Section */
+        .products {
+            background-color: var(--light-color);
+            padding: 80px 0;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.7));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-img {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .product-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .product-price {
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+
+        .add-to-cart {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 3;
+        }
+
+        .product-card:hover .add-to-cart {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .add-to-cart:hover {
+            background-color: #c0398b;
+        }
+
+        /* Promo Section */
+        .promo {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            text-align: center;
+            padding: 60px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .promo::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            right: -80px;
+            width: 300px;
+            height: 300px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .promo h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .promo p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .promo-btns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .promo .btn {
+            background-color: white;
+            color: var(--accent-color);
+        }
+
+        .promo .btn:hover {
+            background-color: var(--dark-color);
+            color: white;
+        }
+
+        /* Categories */
+        .categories {
+            padding: 60px 0;
+            background-color: white;
+        }
+
+        .category-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .category-link {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .category-link:hover, .category-link.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        /* About Section */
+        .about {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            padding: 80px 0;
+            background-color: var(--secondary-color);
+        }
+
+        .about-img {
+            flex: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .about-img img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .about-img:hover img {
+            transform: scale(1.05);
+        }
+
+        .about-content {
+            flex: 1;
+        }
+
+        .about-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+        }
+
+        .about-content p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: var(--text-light);
+        }
+
+        /* Featured Section */
+        .featured {
+            padding: 80px 0;
+            background-color: white;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .featured-card {
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .featured-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .featured-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .featured-info {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .featured-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .featured-price {
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            color: var(--primary-color);
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .footer-column p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #b2bec3;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #b2bec3;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .contact-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .contact-info i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #b2bec3;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .about {
+                flex-direction: column;
+            }
+
+            .about-img, .about-content {
+                flex: none;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.5s ease;
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-links li {
+                margin: 15px 0;
+            }
+
+            .hamburger {
+                display: block;
+                font-size: 1.5rem;
+                color: var(--dark-color);
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-btns, .promo-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 80%;
+                margin-bottom: 15px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .login-modal {
+                padding: 30px 25px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .animate-left {
+            animation: slideInLeft 1s ease forwards;
+        }
+
+        .animate-right {
+            animation: slideInRight 1s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Login Modal -->
+    <div class="modal-overlay" id="adminLoginModal">
+        <div class="login-modal">
+            <button class="close-modal" id="closeLoginModal">&times;</button>
+            <div class="modal-header">
+                <i class="fas fa-user-shield"></i>
+                <h2 class="modal-title">Admin Login</h2>
+                <p class="modal-subtitle">Enter your credentials to access the admin dashboard</p>
+            </div>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminId">Admin ID</label>
+                    <input type="text" id="adminId" placeholder="Enter Admin ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminPin">PIN</label>
+                    <input type="password" id="adminPin" placeholder="Enter PIN" required>
+                </div>
+                <div class="error-message" id="loginError"></div>
+                <button type="submit" class="login-btn">Login to Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="#" class="logo"> <img src="img/Group 2.png" width="50px"  alt="logo"></i> FoodieZone</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="Services.html">Our Products</a></li>
+                    <li><a href="Contact.html">Contact</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                    <!-- Updated admin link to trigger modal -->
+                    <li><a href="#" id="adminLink"><i class="fas fa-user-shield"></i> Admin</a></li>
+                </ul>
+                <div class="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="animate-left">Foodie Zone</h1>
+                <p class="animate-left delay-1">Where food meets quality and where all the delicious baked goods made with love find you. ingredients</p>
+                <div class="hero-btns">
+                    <a href="#" class="btn animate-left delay-2">Order Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products">
+        <div class="container">
+            <h2 class="section-title">Our Products</h2>
+            <div class="products-grid">
+                <!-- Product 1 -->
+                <div class="product-card animate-left">
+                    <img src="img/pizza1.jpg" alt="Whole Grain Bread" class="product-img">
+                    <div class="product-info">
+                        <h3 class="product-title">Home Made Pizza</h3>
+                        <span class="product-price">R110</span>
+                        <div class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product 2 -->
+                <div class="product-card animate-left delay-1">
+                    <img src="img/burger1.jpg" alt="Whole Grain Bread" class="product-img">
+                    <div class="product-info">
+                        <h3 class="product-title">Burger Meal</h3>
+                        <span class="product-price">R60.00</span>
+                        <div class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product 3 -->
+                <div class="product-card animate-left delay-2">
+                    <img src="img/cake1.jpg" alt="Whole Grain Bread" class="product-img">
+                    <div class="product-info">
+                        <h3 class="product-title">Cake Slice</h3>
+                        <span class="product-price">R40.00</span>
+                        <div class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product 4 -->
+                <div class="product-card animate-right">
+                    <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="Whole Grain Bread" class="product-img">
+                    <div class="product-info">
+                        <h3 class="product-title">Whole Grain Bread</h3>
+                        <span class="product-price">R5.99</span>
+                        <div class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product 5 -->
+                <div class="product-card animate-right delay-1">
+                    <img src="img/toast1.jpg" alt="Whole Grain Bread" class="product-img">
+                    <div class="product-info">
+                        <h3 class="product-title">Kasi flava Toast</h3>
+                        <span class="product-price">R23.99</span>
+                        <div class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product 6 -->
+                <div class="product-card animate-right delay-2">
+                    <img src="img/smoothie1.jpg" alt="Whole Grain Bread" class="product-img">
+                    <div class="product-info">
+                        <h3 class="product-title">Smoothies</h3>
+                        <span class="product-price">R18.99</span>
+                        <div class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promo Section -->
+    <section class="promo">
+        <div class="container">
+            <h2>20% Off Your First Order</h2>
+            <p></p>
+            <div class="promo-btns">
+                <a href="#" class="btn">Learn More</a>
+                <a href="#" class="btn btn-outline">Explore More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories">
+        <div class="container">
+            <div class="category-nav">
+                <a href="#" class="category-link active">Cake</a>
+                <a href="#" class="category-link">Muffins</a>
+                <a href="#" class="category-link">Croissant</a>
+                <a href="#" class="category-link">Bread</a>
+                <a href="#" class="category-link">Tart</a>
+                <a href="#" class="category-link">Favorite</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <div class="container">
+            <div class="about-img">
+               
+            </div>
+            <div class="about-content">
+                <h2 class="section-title">About us</h2>
+                <p>At Foodie Zone, we're revolutionizing how local food lovers connect with their favorite vendors. Our platform bridges the gap between food vendors and customers through a seamless mobile and web experience that makes discovering, ordering, and receiving great food easier than ever. Whether you're craving a quick bite or exploring new tastes in your area, Foodie Zone allows you to browse real-time menus, place orders effortlessly, and track deliveries live. For vendors, we offer powerful tools to manage menus, update availability, and handle orders—all from a simple dashboard. With integrated delivery support, in-app reviews, personalized recommendations, and real-time chat, we're building more than just a food app—we're creating a smart, vibrant ecosystem that supports small businesses and delights customers. Welcome to Foodie Zone—where local flavor meets smart convenience.</p>
+                <a href="#" class="btn">Read More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Section -->
+    <section class="featured">
+        <div class="container">
+            <h2 class="section-title">Featured Treats</h2>
+            <div class="featured-grid">
+                <!-- Featured 1 -->
+                <div class="featured-card">
+                    <img src="img/crosant.jpg" alt="Puff Pastry" class="featured-img">
+                    <div class="featured-info">
+                        <h3 class="featured-title">Croissant</h3>
+                        <p class="featured-price">R8.00</p>
+                        <p class="featured-desc">Chocolate filled Croissant.</p>
+                    </div>
+                </div>
+                <!-- Featured 2 -->
+                <div class="featured-card">
+                    <img src="img/dona.jpg" alt="Doughnuts" class="featured-img">
+                    <div class="featured-info">
+                        <h3 class="featured-title">Doughnuts</h3>
+                        <p class="featured-price">R13.00</p>
+                        <p class="featured-desc">Sweet and fluffy.</p>
+                    </div>
+                </div>
+                <!-- Featured 3 -->
+                <div class="featured-card">
+                    <img src="https://images.unsplash.com/photo-1564355808539-22fda35bed7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="Brownies" class="featured-img">
+                    <div class="featured-info">
+                        <h3 class="featured-title">Brownies</h3>
+                        <p class="featured-price">R8.50</p>
+                        <p class="featured-desc">Chocolate heaven.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Foodie Zone</h3>
+                    <p>Delicious home made goodies made with love and the finest ingredients since 2024.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Info</h3>
+                    <div class="contact-info">
+                        <i class="fas fa-phone"></i>
+                        <p>(456) 789-1230</p>
+                    </div>
+                    <div class="contact-info">
+                        <i class="fas fa-envelope"></i>
+                        <p>info@Foodiezone.co.za</p>
+                    </div>
+                    <div class="contact-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>South 13th street, Pimville Soweto</p>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Contact us</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 FoodieZone. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Admin Login Credentials
+        const ADMIN_ID = "6060";
+        const ADMIN_PIN = "7001";
+
+        // DOM Elements
+        const adminLink = document.getElementById('adminLink');
+        const adminLoginModal = document.getElementById('adminLoginModal');
+        const closeLoginModal = document.getElementById('closeLoginModal');
+        const adminLoginForm = document.getElementById('adminLoginForm');
+        const loginError = document.getElementById('loginError');
+
+        // Open Admin Login Modal
+        adminLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            adminLoginModal.classList.add('active');
+            // Clear previous errors
+            loginError.textContent = '';
+            // Reset form
+            adminLoginForm.reset();
+        });
+
+        // Close Admin Login Modal
+        closeLoginModal.addEventListener('click', () => {
+            adminLoginModal.classList.remove('active');
+        });
+
+        // Close modal when clicking outside
+        adminLoginModal.addEventListener('click', (e) => {
+            if (e.target === adminLoginModal) {
+                adminLoginModal.classList.remove('active');
+            }
+        });
+
+        // Handle Admin Login
+        adminLoginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const adminId = document.getElementById('adminId').value;
+            const adminPin = document.getElementById('adminPin').value;
+
+            // Validate credentials
+            if (adminId === ADMIN_ID && adminPin === ADMIN_PIN) {
+                // Successful login - redirect to admin page
+                window.location.href = 'admin.html';
+            } else {
+                // Failed login - show error
+                loginError.textContent = 'Invalid Admin ID or PIN. Please try again.';
+                
+                // Clear form
+                document.getElementById('adminId').value = '';
+                document.getElementById('adminPin').value = '';
+                document.getElementById('adminId').focus();
+            }
+        });
+
+        // Mobile Navigation Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.innerHTML = navLinks.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+
+        // Sticky Header
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            header.classList.toggle('scrolled', window.scrollY > 100);
+        });
+
+        // Scroll Animation
+        const animateElements = document.querySelectorAll('.animate-left, .animate-right');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        animateElements.forEach(element => {
+            observer.observe(element);
+        });
+
+        // Product Card Hover Effect
+        const productCards = document.querySelectorAll('.product-card');
+
+        productCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const img = card.querySelector('.product-img');
+                img.style.transform = 'scale(1.05)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                const img = card.querySelector('.product-img');
+                img.style.transform = 'scale(1)';
+            });
+        });
+
+        // Category Link Active State
+        const categoryLinks = document.querySelectorAll('.category-link');
+
+        categoryLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                categoryLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
